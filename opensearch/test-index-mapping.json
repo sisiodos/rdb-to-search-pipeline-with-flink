@@ -1,0 +1,15 @@
+{
+  "mappings": {
+    "properties": {
+      "doc_id": {
+        "type": "keyword"
+      },
+      "id": {
+        "type": "integer"
+      },
+      "message": {
+        "type": "text"
+      }
+    }
+  }
+}
