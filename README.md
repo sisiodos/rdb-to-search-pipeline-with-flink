@@ -84,5 +84,5 @@ Apache License 2.0
 「RDBと検索を繋ぐ：Flink・Kafka・OpenSearchで学ぶパイプライン設計」
 と連動しています。詳しくは以下をご覧ください：
 
-→ ]Zennで読む](https://zenn.dev/sisiodos/books/4d81a988255bf0)
+→ [Zennで読む](https://zenn.dev/sisiodos/books/4d81a988255bf0)
 
