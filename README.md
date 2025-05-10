@@ -1,59 +1,75 @@
-# RDBと検索を繋ぐ：Flink・Kafka・OpenSearchで学ぶパイプライン設計
+# Connecting RDBs and Search Engines: Building a Pipeline with Flink, Kafka, and OpenSearch
 
-本リポジトリは、技術ガイドブック「[RDBと検索を繋ぐ：Flink・Kafka・OpenSearchで学ぶパイプライン設計](https://zenn.dev/sisiodos/books/4d81a988255bf0)」で紹介されている OSS ベースのデータパイプライン構成を、すぐに手元で試せるようにまとめたものです。
+📖 [日本語はこちら / Japanese version](./README-ja.md)
 
-## 構成概要
+This repository contains a runnable example of the OSS-based data pipeline architecture introduced in the technical guidebook  
+📘 “[Read the full guide on Zenn (in Japanese)](https://zenn.dev/sisiodos/books/4d81a988255bf0)” (in Japanese).
 
-本リポジトリでは、以下のような構成を Docker Compose によって構築します。
-
-この構成を用いて、リレーショナルデータベースの更新をリアルタイムで検索エンジンに連携する仕組みを、実際に体験しながら学ぶことができます。
+You can use this Docker Compose setup to try the entire pipeline locally and learn how to stream updates from a relational database to a search engine in real time.
 
 ---
 
-## Quickstart
+## 🛠️ Architecture Overview
 
-### 前提
+This repository builds the following components via Docker Compose:
 
-- Docker（Docker Desktop または CLI）
-- Docker Compose v2 以降
+- PostgreSQL
+- Kafka & ZooKeeper
+- Kafka Connect (Debezium)
+- Flink (JobManager / TaskManager)
+- OpenSearch
 
-### 1. クローン
+With this setup, you can experience how CDC (Change Data Capture) from a relational database can be integrated into a real-time searchable index.
+
+---
+
+## 🚀 Quickstart
+
+### Prerequisites
+
+- Docker (Docker Desktop or CLI)
+- Docker Compose v2 or later
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/your-username/flink-opensearch-pipeline.git
 cd flink-opensearch-pipeline
 ```
 
-### 2. サービスの起動
+### 2. Start the services
+
 ```bash
 docker compose up -d
 ```
 
-起動されるサービス：
+The following services will be started:
 - PostgreSQL
 - Kafka & ZooKeeper
 - Kafka Connect（Debezium）
 - Flink JobManager / TaskManager
 - OpenSearch
 
-### 3. PostgreSQL に初期データ投入済み
-`postgres/00-init.sql` により、自動的にサンプルテーブル testtable が作成されます。
+### 3. PostgreSQL will be initialized automatically
 
-### 4. Debezium コネクタの登録
-以下のコマンドで PostgreSQL 用の Debezium コネクタを登録します。
+The `postgres/00-init.sql` script will create a sample table `testtable` upon startup.
+
+### 4. Register the Debezium connector for PostgreSQL
+
+Run the following script to register the Debezium connector:
 
 ```bash
 bash scripts/01-debezium-setup.sh
 ```
 
-### 5. Kafka トピックの確認
+### 5. Check available Kafka topics
 ```bash
 docker compose exec kafka kafka-topics \
   --bootstrap-server localhost:9092 \
   --list
 ```
 
-### 6. CDC イベントの確認
+### 6. Confirm CDC events in Kafka
 ```bash
 docker compose exec kafka kafka-console-consumer \
   --bootstrap-server localhost:9092 \
@@ -61,28 +77,32 @@ docker compose exec kafka kafka-console-consumer \
   --from-beginning
 ```
 
-### フォルダ構成
+### 📁 Directory Structure
 ```bash
 .
-├── docker/                # docker-compose.yaml（サービス定義）
-├── postgres/              # PostgreSQL 初期化スクリプト
+├── docker/                # Docker Compose configuration
+├── postgres/              # PostgreSQL initialization scripts
 ├── flink/
-│   ├── sql/               # Flink SQL ジョブ定義（CDC → OpenSearch など）
-│   ├── lib/ext/           # Flink の外部コネクタ JAR
-│   └── entrypoints/       # Flink 実行用スクリプト
-└── opensearch/            # OpenSearch インデックス定義
+│   ├── sql/               # Flink SQL job definitions (CDC → OpenSearch, etc.)
+│   ├── lib/ext/           # External connector JARs for Flink
+│   └── entrypoints/       # Flink entrypoint scripts
+└── opensearch/            # OpenSearch index definitions
 ```
-補足
-- OpenSearch Dashboards は http://localhost:5601 でアクセス可能です。
-- Flink Web UI は http://localhost:8081 でアクセス可能です。
 
-### ライセンス
+### 🔎 Notes
+- OpenSearch Dashboards: http://localhost:5601
+- Flink Web UI: http://localhost:8081
+
+Once all services are running, you can:
+- Submit Flink SQL jobs located in `flink/sql/`
+- Access OpenSearch Dashboards at `http://localhost:5601` to explore indexed data
+- Explore the Flink Web UI at `http://localhost:8081`
+
+### 📄 License
 Apache License 2.0
 
-### 本書について
-このサンプルは、Zenn にて公開中の技術ガイド：
-「RDBと検索を繋ぐ：Flink・Kafka・OpenSearchで学ぶパイプライン設計」
-と連動しています。詳しくは以下をご覧ください：
+### 📘 About the Guidebook
+This repository accompanies the technical guide (in Japanese) published on Zenn:
 
-→ [Zennで読む](https://zenn.dev/sisiodos/books/4d81a988255bf0)
+→ [[Read the full guide on Zenn (in Japanese)]](https://zenn.dev/sisiodos/books/4d81a988255bf0)
 
