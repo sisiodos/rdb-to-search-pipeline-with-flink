@@ -84,7 +84,7 @@ docker compose exec kafka kafka-console-consumer \
 ├── postgres/              # PostgreSQL initialization scripts
 ├── flink/
 │   ├── sql/               # Flink SQL job definitions (CDC → OpenSearch, etc.)
-│   ├── lib/ext/           # External connector JARs for Flink
+│   ├── p[ugins/           # External connector JARs for Flink
 │   └── entrypoints/       # Flink entrypoint scripts
 └── opensearch/            # OpenSearch index definitions
 ```
